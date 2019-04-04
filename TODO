@@ -1,0 +1,5 @@
+	* Enhancing bug detection (event recorder, step by step)
+	* SDP fuzz mode
+	* Add sleep argument between L2CAP requests (some devices 
+	refuse high speed packets)
+	* ncurse interface ? ;)
